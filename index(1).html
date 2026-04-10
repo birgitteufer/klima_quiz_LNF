@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wo liegt dein persönliches Klima-Potenzial?</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark: #04342C;
+      --green-mid: #0F6E56;
+      --green: #1D9E75;
+      --green-light: #5DCAA5;
+      --green-pale: #E1F5EE;
+      --text: #1a1a1a;
+      --text-muted: #666;
+      --border: #e0e0e0;
+      --bg: #f7f7f5;
+      --white: #ffffff;
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      padding: 2rem 2rem 2.5rem;
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .logo-text { font-size: 14px; font-weight: 600; color: var(--green-mid); }
+
+    .progress-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-bottom: 1.75rem;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--green);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    .step-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.5rem;
+    }
+    .area-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--green-mid);
+      background: var(--green-pale);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 0.75rem;
+    }
+    .question {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+    .question-hint {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+    }
+
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .option-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      color: var(--text);
+      transition: border-color 0.15s, background 0.15s;
+      width: 100%;
+    }
+    .option-btn:hover { border-color: var(--green-light); background: var(--green-pale); }
+    .option-btn.selected { border-color: var(--green); background: var(--green-pale); color: var(--green-dark); font-weight: 500; }
+    .option-icon { font-size: 22px; flex-shrink: 0; width: 30px; text-align: center; }
+
+    .nav-row { display: flex; justify-content: flex-end; margin-top: 1.75rem; }
+    .btn-next {
+      padding: 11px 28px;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      opacity: 0.35;
+      pointer-events: none;
+      transition: opacity 0.2s, background 0.15s;
+    }
+    .btn-next.active { opacity: 1; pointer-events: auto; }
+    .btn-next.active:hover { background: var(--green-mid); }
+
+    .result-hero { text-align: center; margin-bottom: 2rem; }
+    .result-hero .emoji { font-size: 52px; margin-bottom: 0.75rem; }
+    .result-hero h2 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+    .result-hero p { font-size: 15px; color: var(--text-muted); line-height: 1.6; }
+
+    .main-card {
+      background: var(--green-pale);
+      border: 2px solid var(--green-light);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .main-card .mtag { font-size: 11px; font-weight: 700; color: var(--green-mid); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+    .main-card h3 { font-size: 17px; font-weight: 700; color: var(--green-dark); margin-bottom: 0.5rem; }
+    .main-card p { font-size: 14px; color: var(--green-mid); line-height: 1.6; }
+    .tips { list-style: none; margin-top: 0.75rem; }
+    .tips li { font-size: 14px; color: var(--green-dark); padding: 4px 0 4px 18px; position: relative; line-height: 1.5; }
+    .tips li::before { content: '→'; position: absolute; left: 0; color: var(--green-light); }
+
+    .other-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.25rem; }
+    .other-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.25rem;
+    }
+    .other-card .oarea { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.25rem; }
+    .other-card .omsg { font-size: 14px; color: var(--text); line-height: 1.5; }
+    .other-card .omsg.good { color: var(--green-mid); }
+
+    .closing-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .closing-box p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin-bottom: 0.75rem;
+    }
+    .closing-box p:last-child { margin-bottom: 0; }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn-reset {
+      padding: 10px 20px;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-reset:hover { background: var(--bg); }
+    .btn-save {
+      padding: 10px 20px;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-save:hover { background: var(--green-mid); }
+
+    @media (max-width: 480px) {
+      .card { padding: 1.5rem 1.25rem 2rem; }
+      .question { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+<div class="card" id="main-card">
+  <div class="logo-row">
+    <div class="logo-icon">🌍</div>
+    <div class="logo-text">Klima-Potenzial-Check</div>
+  </div>
+
+  <div id="quiz-view">
+    <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+    <div class="step-label" id="step-label">Frage 1 von 6</div>
+    <div class="area-tag" id="area-tag"></div>
+    <div class="question" id="question"></div>
+    <div class="question-hint">Wähle aus, was am ehesten auf dich zutrifft — wir wissen, dass es Mischformen gibt.</div>
+    <div class="options" id="options"></div>
+    <div class="nav-row"><button class="btn-next" id="btn-next" onclick="nextStep()">Weiter →</button></div>
+  </div>
+
+  <div id="result-view" style="display:none"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    area: 'Ernährung',
+    text: 'Was beschreibt deine Ernährung am ehesten?',
+    options: [
+      { icon: '🥩', label: 'Fleischhaltig', value: 'fleisch' },
+      { icon: '🥦', label: 'Vegetarisch', value: 'vegetarisch' },
+      { icon: '🌱', label: 'Vegan', value: 'vegan' }
+    ]
+  },
+  {
+    area: 'Mobilität',
+    text: 'Wie bist du im Alltag meist unterwegs?',
+    options: [
+      { icon: '🚗', label: 'Auto / Motorrad', value: 'auto' },
+      { icon: '🚌', label: 'Öffentliche Verkehrsmittel', value: 'oeffis' },
+      { icon: '🚲', label: 'Aktive Mobilität (Rad / zu Fuß)', value: 'aktiv' }
+    ]
+  },
+  {
+    area: 'Mobilität',
+    text: 'Wie reist du typischerweise in den Urlaub?',
+    options: [
+      { icon: '✈️', label: 'Mit dem Flugzeug', value: 'flug' },
+      { icon: '🚆', label: 'Ohne Flugzeug (Zug, Bus, Auto)', value: 'kein_flug' }
+    ]
+  },
+  {
+    area: 'Wohnen / Energie',
+    text: 'Wie wird dein Zuhause beheizt?',
+    options: [
+      { icon: '🔥', label: 'Gas / Öl / Kohle / Fernheizung', value: 'konv_heizen' },
+      { icon: '♻️', label: 'Wärmepumpe / Biomasse / Solar / Elektrisch', value: 'nachhaltig_heizen' },
+      { icon: '❓', label: 'Weiß ich nicht', value: 'weiss_heizen' }
+    ]
+  },
+  {
+    area: 'Wohnen / Energie',
+    text: 'Woher kommt dein Strom?',
+    options: [
+      { icon: '⚡', label: 'Konventioneller Stromanbieter', value: 'konv_strom' },
+      { icon: '☀️', label: 'Ökostrom / Photovoltaik', value: 'oeko_strom' },
+      { icon: '❓', label: 'Weiß ich nicht', value: 'weiss_strom' }
+    ]
+  },
+  {
+    area: 'Konsum',
+    text: 'Wie kaufst du überwiegend ein?',
+    options: [
+      { icon: '🛍️', label: 'Neu kaufen', value: 'neu' },
+      { icon: '♻️', label: 'Second-Hand / gebraucht', value: 'secondhand' }
+    ]
+  }
+];
+
+const closingHTML = `
+  <div class="closing-box">
+    <p>Vielleicht fragst du dich, warum Mülltrennung, regionale Lebensmittel oder energieeffiziente Geräte hier fehlen. Sie sind wichtig – keine Frage – aber ihr Effekt aufs Klima ist kleiner als oft gedacht. Unser Gehirn spielt uns nämlich gerne einen Streich: Wer Müll trennt oder ein Stoffsackerl verwendet, hat schnell das Gefühl, seinen Teil getan zu haben – und bucht den nächsten Flug ohne schlechtes Gewissen. Das nennt man Moral Licensing.</p>
+    <p>Deshalb fokussieren wir uns hier auf Maßnahmen mit echter Wirkung – damit dein Einsatz fürs Klima genau dort ankommt, wo er am meisten bringt.</p>
+  </div>
+`;
+
+let current = 0, answers = [], selected = null;
+
+function render() {
+  const q = questions[current];
+  document.getElementById('step-label').textContent = 'Frage ' + (current + 1) + ' von ' + questions.length;
+  document.getElementById('progress').style.width = ((current / questions.length) * 100) + '%';
+  document.getElementById('area-tag').textContent = q.area;
+  document.getElementById('question').textContent = q.text;
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  q.options.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn' + (selected === i ? ' selected' : '');
+    btn.innerHTML = '<span class="option-icon">' + o.icon + '</span><span>' + o.label + '</span>';
+    btn.onclick = () => { selected = i; render(); };
+    opts.appendChild(btn);
+  });
+  const next = document.getElementById('btn-next');
+  selected !== null ? next.classList.add('active') : next.classList.remove('active');
+}
+
+function nextStep() {
+  if (selected === null) return;
+  answers[current] = questions[current].options[selected].value;
+  current++;
+  selected = null;
+  if (current >= questions.length) showResult(); else render();
+}
+
+function getPotential(ans) {
+  const [ern, mob, urlaub, heizen, strom, konsum] = ans;
+  const scores = {
+    'Mobilität': (urlaub === 'flug' ? 3 : 0) + (mob === 'auto' ? 2 : mob === 'oeffis' ? 1 : 0),
+    'Wohnen & Energie': (heizen === 'konv_heizen' ? 2 : heizen === 'weiss_heizen' ? 1 : 0) + (strom === 'konv_strom' ? 2 : strom === 'weiss_strom' ? 1 : 0),
+    'Ernährung': ern === 'fleisch' ? 3 : ern === 'vegetarisch' ? 1 : 0,
+    'Konsum': konsum === 'neu' ? 2 : 0
+  };
+  const max = Math.max(...Object.values(scores));
+  if (max === 0) return 'best';
+  return Object.keys(scores).find(k => scores[k] === max);
+}
+
+function getAdvice(area, ans) {
+  const [ern, mob, urlaub, heizen, strom] = ans;
+  if (area === 'Mobilität') {
+    const tips = [];
+    if (urlaub === 'flug') { tips.push('Kurzstreckenflüge durch den Zug ersetzen'); tips.push('Nahe Reiseziele entdecken — auch Urlaub im eigenen Land hat viel zu bieten'); }
+    if (mob === 'auto') { tips.push('Einen autofreien Tag pro Woche einführen'); tips.push('Kurzstrecken unter 3 km aktiv zurücklegen (zu Fuß oder mit dem Fahrrad)'); tips.push('Fahrgemeinschaften bilden'); }
+    else if (mob === 'oeffis') tips.push('Kurze Wege bewusst zu Fuß oder mit dem Fahrrad zurücklegen');
+    return { title: 'Mobilität ist dein größtes Klima-Potenzial', intro: 'Schon einzelne bewusste Entscheidungen im Alltag und beim Reisen können hier viel bewirken.', tips };
+  }
+  if (area === 'Wohnen & Energie') {
+    const tips = [];
+    if (heizen === 'konv_heizen') { tips.push('Raumtemperatur um 1 °C senken'); tips.push('Stoßlüften statt dauerhaft gekippte Fenster'); tips.push('Heizkörper nicht zustellen'); }
+    if (strom === 'konv_strom') { tips.push('Ökostromanbieter prüfen — ein Wechsel ist oft in Minuten erledigt'); tips.push('Geräte nicht im Standby lassen, sondern vollständig ausschalten'); tips.push('Halogenlampen durch LED ersetzen'); }
+    if (heizen === 'weiss_heizen') tips.push('Finde heraus, womit dein Zuhause beheizt wird — frag deine Vermieter:in oder schau in die Betriebskostenabrechnung');
+    if (strom === 'weiss_strom') tips.push('Prüfe deinen Stromvertrag — ein Wechsel zu Ökostrom ist oft günstiger als gedacht');
+    return { title: 'Wohnen & Energie ist dein größtes Klima-Potenzial', intro: 'Schon kleine Anpassungen beim Heizen und Strom sparen Energie und Emissionen.', tips };
+  }
+  if (area === 'Ernährung') {
+    const tips = ern === 'fleisch'
+      ? ['1–3 fleischfreie Tage pro Woche einplanen', 'Rindfleisch durch Geflügel oder pflanzliche Alternativen ersetzen', 'Neue pflanzliche Proteinquellen wie Linsen, Bohnen oder Kichererbsen ausprobieren']
+      : ['Pflanzliche Milchalternativen testen', 'Schau dir an, wo du bei Milchprodukten und Eiern reduzieren oder auf pflanzliche Alternativen umsteigen kannst', 'Auf zertifizierte Bio-Qualität bei Eiern achten'];
+    return { title: 'Ernährung ist dein größtes Klima-Potenzial', intro: 'Weniger tierische Produkte haben eine große Klima-Wirkung — und sind oft auch gesünder.', tips };
+  }
+  return {
+    title: 'Konsum ist dein größtes Klima-Potenzial',
+    intro: 'Jedes Produkt hinterlässt einen ökologischen Fußabdruck — bewusster konsumieren geht oft ohne echten Verzicht.',
+    tips: ['30-Tage-Regel vor größeren Käufen: Brauche ich das wirklich?', 'Second-Hand-Angebote ausprobieren oder im Bekanntenkreis tauschen', 'Reparieren statt ersetzen', 'Leihen statt kaufen']
+  };
+}
+
+function getOtherFeedback(area, ans) {
+  const [ern, mob, urlaub, heizen, strom, konsum] = ans;
+  const all = [];
+  if (area !== 'Mobilität') {
+    if (urlaub === 'kein_flug') all.push({ area: 'Mobilität', msg: 'Durch den Verzicht auf Flugreisen leistest du bereits einen besonders großen Beitrag zum Klimaschutz.', good: true });
+    if (mob === 'aktiv') all.push({ area: 'Mobilität', msg: 'Mit aktiver Mobilität leistest du bereits einen besonders großen Beitrag. Dein Potenzial ist hier weitgehend ausgeschöpft.', good: true });
+  }
+  if (area !== 'Ernährung') {
+    if (ern === 'vegan') all.push({ area: 'Ernährung', msg: 'Mit veganer Ernährung leistest du bereits einen besonders großen Beitrag zum Klimaschutz. Das ist ein starkes Signal.', good: true });
+    else if (ern === 'vegetarisch') all.push({ area: 'Ernährung', msg: 'Vegetarische Ernährung leistet bereits einen wichtigen Beitrag. Schau dir an, wo du bei Milchprodukten und Eiern reduzieren oder auf pflanzliche Alternativen umsteigen kannst.', good: false });
+  }
+  if (area !== 'Wohnen & Energie') {
+    if (heizen === 'nachhaltig_heizen' && strom === 'oeko_strom') all.push({ area: 'Wohnen & Energie', msg: 'Nachhaltige Heizung und Ökostrom sind gut fürs Klima. Hier bist du bereits sehr gut aufgestellt.', good: true });
+  }
+  if (area !== 'Konsum') {
+    if (konsum === 'secondhand') all.push({ area: 'Konsum', msg: 'Second-Hand kaufen schont Ressourcen. Hier bist du bereits sehr gut aufgestellt.', good: true });
+  }
+  return all;
+}
+
+function showResult() {
+  document.getElementById('quiz-view').style.display = 'none';
+  const rv = document.getElementById('result-view');
+  rv.style.display = 'block';
+  const area = getPotential(answers);
+  let html = '';
+
+  if (area === 'best') {
+    html = `
+      <div class="result-hero">
+        <div class="emoji">🌍</div>
+        <h2>Vorbildlich fürs Klima!</h2>
+        <p>Du bist in vielen Bereichen bereits sehr gut aufgestellt. Zeig anderen, dass klimafreundliches Leben im Alltag möglich ist — und inspiriere sie, es dir gleichzutun.</p>
+      </div>
+      ${closingHTML}
+    `;
+  } else {
+    const adv = getAdvice(area, answers);
+    const others = getOtherFeedback(area, answers);
+    html += `<div class="result-hero"><div class="emoji">🌱</div><h2>Dein persönliches Klima-Potenzial</h2><p>Hier kannst du besonders viel bewirken.</p></div>`;
+    html += '<div class="main-card"><div class="mtag">Größtes Potenzial</div><h3>' + adv.title + '</h3><p>' + adv.intro + '</p>';
+    if (adv.tips.length) html += '<ul class="tips">' + adv.tips.map(t => '<li>' + t + '</li>').join('') + '</ul>';
+    html += '</div>';
+    if (others.length) {
+      html += '<div class="other-cards">' + others.map(o =>
+        '<div class="other-card"><div class="oarea">' + o.area + '</div><div class="omsg' + (o.good ? ' good' : '') + '">' + (o.good ? '✓ ' : '') + o.msg + '</div></div>'
+      ).join('') + '</div>';
+    }
+    html += closingHTML;
+  }
+
+  html += `
+    <div class="action-row">
+      <button class="btn-save" onclick="saveAsImage()">📷 Als Bild speichern</button>
+      <button class="btn-reset" onclick="resetQuiz()">↩ Quiz neu starten</button>
+    </div>
+  `;
+  rv.innerHTML = html;
+}
+
+function saveAsImage() {
+  const btn = document.querySelector('.btn-save');
+  btn.textContent = 'Wird gespeichert...';
+  btn.disabled = true;
+  html2canvas(document.getElementById('main-card'), { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'mein-klima-potenzial.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    btn.textContent = '📷 Als Bild speichern';
+    btn.disabled = false;
+  });
+}
+
+function resetQuiz() {
+  current = 0; answers = []; selected = null;
+  document.getElementById('quiz-view').style.display = 'block';
+  document.getElementById('result-view').style.display = 'none';
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
