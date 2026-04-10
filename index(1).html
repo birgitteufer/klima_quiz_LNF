@@ -349,29 +349,29 @@ function getAdvice(area, ans) {
   const [ern, mob, urlaub, heizen, strom] = ans;
   if (area === 'Mobilität') {
     const tips = [];
-    if (urlaub === 'flug') { tips.push('Kurzstreckenflüge durch den Zug ersetzen'); tips.push('Nahe Reiseziele entdecken — auch Urlaub im eigenen Land hat viel zu bieten'); }
-    if (mob === 'auto') { tips.push('Einen autofreien Tag pro Woche einführen'); tips.push('Kurzstrecken unter 3 km aktiv zurücklegen (zu Fuß oder mit dem Fahrrad)'); tips.push('Fahrgemeinschaften bilden'); }
-    else if (mob === 'oeffis') tips.push('Kurze Wege bewusst zu Fuß oder mit dem Fahrrad zurücklegen');
+    if (urlaub === 'flug') { tips.push('Kurzstreckenflüge kann man bequem durch den Zug ersetzen'); tips.push('Nahe Reiseziele entdecken — auch Urlaub im eigenen Land hat viel zu bieten'); }
+    if (mob === 'auto') { tips.push('Versuche, einen autofreien Tag pro Woche einführen'); tips.push('Kurzstrecken unter 3 km zu Fuß oder mit dem Fahrred zurückzulegen spart Geld und ist gut für die Umwelt und deine Gesundheit'); tips.push('Fahrgemeinschaften bilden'); }
+    else if (mob === 'oeffis') tips.push('Kurzstrecken unter 3 km zu Fuß oder mit dem Fahrred zurückzulegen spart Geld und ist gut für die Umwelt und deine Gesundheit');
     return { title: 'Mobilität ist dein größtes Klima-Potenzial', intro: 'Schon einzelne bewusste Entscheidungen im Alltag und beim Reisen können hier viel bewirken.', tips };
   }
   if (area === 'Wohnen & Energie') {
     const tips = [];
-    if (heizen === 'konv_heizen') { tips.push('Raumtemperatur um 1 °C senken'); tips.push('Stoßlüften statt dauerhaft gekippte Fenster'); tips.push('Heizkörper nicht zustellen'); }
-    if (strom === 'konv_strom') { tips.push('Ökostromanbieter prüfen — ein Wechsel ist oft in Minuten erledigt'); tips.push('Geräte nicht im Standby lassen, sondern vollständig ausschalten'); tips.push('Halogenlampen durch LED ersetzen'); }
+    if (heizen === 'konv_heizen') { tips.push('Um das Klima zu schützen und dabei auch noch Geld zu sparen kannst du die Raumtemperatur um 1 °C senken'); tips.push('Stoßlüften statt dauerhaft gekippte Fenster ebenso'); tips.push('Heizkörper nicht zustellen'); }
+    if (strom === 'konv_strom') { tips.push('Ökostromanbieter testen — ein Wechsel ist oft in Minuten erledigt und spart oft zusätzlich Geld'); tips.push('Geräte nicht im Standby lassen, sondern vollständig ausschalten'); tips.push('Halogenlampen durch LED ersetzen'); }
     if (heizen === 'weiss_heizen') tips.push('Finde heraus, womit dein Zuhause beheizt wird — frag deine Vermieter:in oder schau in die Betriebskostenabrechnung');
     if (strom === 'weiss_strom') tips.push('Prüfe deinen Stromvertrag — ein Wechsel zu Ökostrom ist oft günstiger als gedacht');
     return { title: 'Wohnen & Energie ist dein größtes Klima-Potenzial', intro: 'Schon kleine Anpassungen beim Heizen und Strom sparen Energie und Emissionen.', tips };
   }
   if (area === 'Ernährung') {
     const tips = ern === 'fleisch'
-      ? ['1–3 fleischfreie Tage pro Woche einplanen', 'Rindfleisch durch Geflügel oder pflanzliche Alternativen ersetzen', 'Neue pflanzliche Proteinquellen wie Linsen, Bohnen oder Kichererbsen ausprobieren']
-      : ['Pflanzliche Milchalternativen testen', 'Schau dir an, wo du bei Milchprodukten und Eiern reduzieren oder auf pflanzliche Alternativen umsteigen kannst', 'Auf zertifizierte Bio-Qualität bei Eiern achten'];
+      ? ['Versuche, 1–3 fleischfreie Tage pro Woche einplanen', 'Rindfleisch durch Geflügel oder pflanzliche Alternativen ersetzen ist klimafreundlicher und gesünder', 'Neue pflanzliche Proteinquellen wie Linsen, Bohnen oder Kichererbsen ausprobieren hilft auch, den eigenen Speiseplan zu erweitern']
+      : ['Schau dir an, wo du bei Milchprodukten und Eiern reduzieren oder auf pflanzliche Alternativen umsteigen kannst', 'Achte auf zertifizierte Bio-Qualität bei Eiern und Milchprodukten];
     return { title: 'Ernährung ist dein größtes Klima-Potenzial', intro: 'Weniger tierische Produkte haben eine große Klima-Wirkung — und sind oft auch gesünder.', tips };
   }
   return {
     title: 'Konsum ist dein größtes Klima-Potenzial',
     intro: 'Jedes Produkt hinterlässt einen ökologischen Fußabdruck — bewusster konsumieren geht oft ohne echten Verzicht.',
-    tips: ['30-Tage-Regel vor größeren Käufen: Brauche ich das wirklich?', 'Second-Hand-Angebote ausprobieren oder im Bekanntenkreis tauschen', 'Reparieren statt ersetzen', 'Leihen statt kaufen']
+    tips: ['Warte das nächste Mal 30 Tage vor größeren Käufen und frage dich: Brauche ich das wirklich?', 'Hast du schonmal versuch, Second-Hand-Angebote auszuprobieren oder im Bekanntenkreis tauschen?', 'Reparieren statt ersetzen oder leihen statt kaufen schont nicht nur natürlich Ressourcen, sondern auch deinen Geldbeutel']
   };
 }
 
